@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../lab01/index.css">
+    
+    <title>Cheffify</title>
+</head>
+<body>
+    <header>
+        <div class="flex-container">
+            <div>
+                <img src="logo.jpg" alt="">
+                <input type="search" style="width: 200px; height: 5px; margin-left: 15px; " placeholder="seach">
+            </div>
+            <div>
+                <menu>
+                    <li>What to cook</li>
+                    <li>Recipes</li>
+                    <li>Ingredients</li>
+                    <li>Occasions</li>
+                    <li>About us</li>
+                </menu>
+            </div>
+            <div>
+                <button id="btn_box">Your recipes box</button>
+                
+                <img src="./avt.jpg" alt="" id="img_avt">
+            </div>
+        </div>
+    </header>
+    <main>
+        <aside>
+            <h2>FILTERS</h2>
+            <form>
+                <fieldset>
+                    <legend>Type</legend>
+                    <label><input type="checkbox" /> Pan-fried</label>
+                    <label><input type="checkbox" /> Stir-fried</label>
+                    <label><input type="checkbox" /> Grilled</label>
+                    <label><input type="checkbox" /> Roasted</label>
+                    <label><input type="checkbox" /> Sautéed</label>
+                    <label><input type="checkbox" /> Baked</label>
+                    <label><input type="checkbox" /> Steamed</label>
+                    <label><input type="checkbox" /> Stewed</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Time</legend>
+                    <input type="range" min="10" max="60" />
+                </fieldset>
+                <fieldset>
+                    <legend>Rating</legend>
+                    <input type="radio" name="rating" value="1" /> ★
+                    <input type="radio" name="rating" value="2" /> ★★
+                    <input type="radio" name="rating" value="3" /> ★★★
+                    <input type="radio" name="rating" value="4" /> ★★★★
+                    <input type="radio" name="rating" value="5" /> ★★★★★
+                </fieldset>
+                <button type="submit">Apply</button>
+            </form>
+        </aside>
+        <section>
+            <h2>Sorry, no results were found for “cakescasa”</h2>
+            <p>We have all your Independence Day sweets covered.</p>
+            <div class="suggestions">
+                <a href="#">Sweet Cake</a>
+                <a href="#">Black Cake</a>
+                <a href="#">Puzzle Verde</a>
+                <a href="#">Healthy food</a>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer">
+            <div>
+                <h2>About us</h2>
+                <p>Wecome to out website,a wonderful place to
+                exexplore and lear how to <br>   cook like a pro.</p>
+                <div class="txt_email">
+                    <input type="text" name="" id="txt_footer">
+                    <button id="btn_send">send</button>
+                    <br>
+                    <br>
+                    <br>
+                </div>
+            </div>  
+            <div id="h3_ft">
+                <img src="" alt="" style="height: 35px; width: 50px;">
+                <h6>2023 chefycompany</h6>
+                <h6>Team of Severel</h6>
+            </div>
+            
+        </div>
+        <div>
+            <menu>
+                
+            </menu>
+        </div>
+    </footer>
+</body>
+</html>

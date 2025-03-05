@@ -1,0 +1,13 @@
+
+.ul_header {
+  list-style: none;
+  display: flex;
+  width: 50%;
+  height: 80px;
+  margin: 400px;
+  background-color: aquamarine;
+}
+.ul_header li{
+  background-color: rgb(240, 204, 204);
+  color:  rgb(26, 0, 143);
+}
