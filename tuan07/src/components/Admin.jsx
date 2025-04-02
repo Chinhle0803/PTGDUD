@@ -1,10 +1,16 @@
+import { useState } from 'react';
 import './Admin.css'
 import { CiSearch } from "react-icons/ci";
 import { FaRegBell } from "react-icons/fa";
 function Admin() {
 
-    const ad_menu = ['Dashboard', 'Project', 'Teams', 'Analatic', 'Messages', 'Integreations']
+    const ad_menu = [
+        {
+            img: "../public/Squares four 1.png",
+            title: 'Dashboard'
+        }, 'Project', 'Teams', 'Analatic', 'Messages', 'Integreations']
     const card = ['Thẻ 1', 'Thẻ 2', 'Thẻ 3']
+    const [isSelect, setIsSelect] = useState(false)
     return (
         <div>
             <div className="container">
@@ -20,10 +26,15 @@ function Admin() {
                     </div>
                 </div>
                 <div className="menu">
+                    <img src="../public/Image 1858.png" alt="" />
                     <ul >
                         {
                             ad_menu.map((item, i) => (
-                                <li key={i}>{item}</li>
+                                <li key={i} style={{
+
+                                }}
+                                // onClick={()=> {style={{backgroundColor: 'pink'}}}}
+                                >{item}</li>
                             ))
                         }
                     </ul>
@@ -41,17 +52,17 @@ function Admin() {
                             ))}
                         </ul>
                     </div>
-                    
+
 
                 </div>
                 <div className="footer">
-                <div>
+                    <div>
                         <div style={{ display: 'flex' }}>
                             <img src="../public/Squares four 1.png" alt="" />
                             <h4 style={{ color: 'black', padding: "0px", margin: '0px' }}>Detailed report</h4>
                         </div>
                         <div>
-                            
+
                         </div>
                     </div>
                 </div>
