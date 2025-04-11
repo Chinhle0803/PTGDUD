@@ -45,6 +45,8 @@
     /* height: 20px; */
   }
   .hd-menu-input{
-    margin-left: 900px;
+    display: flex;
+    justify-content: space-around;
+    margin-left: 450px;
     color: rgb(224, 169, 200);
   }
