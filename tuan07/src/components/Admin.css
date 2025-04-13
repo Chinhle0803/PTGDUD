@@ -50,3 +50,25 @@
     margin-left: 450px;
     color: rgb(224, 169, 200);
   }
+  .nav-link {
+    display: flex;
+    align-items: center; /* Căn chỉnh theo chiều dọc */
+    gap: 10px; /* Khoảng cách giữa hình và chữ */
+    text-decoration: none; /* Xóa gạch chân */
+    color: inherit; /* Giữ nguyên màu chữ */
+    padding: 10px 20px; /* Thêm padding để có không gian xung quanh */
+    border-radius: 25px; /* Tạo bo góc cho liên kết */
+}
+
+.nav-link img {
+    width: 20px; /* Chiều rộng ảnh */
+    height: 20px; /* Chiều cao ảnh */
+}
+
+/* Hiệu ứng khi item được chọn */
+.nav-link.active-nav {
+    background-color: rgb(228, 97, 169); /* Màu hồng khi chọn */
+    color: white; /* Đổi màu chữ sang trắng khi chọn */
+    border-radius: 25px; /* Đảm bảo viền bo tròn */
+}
+
