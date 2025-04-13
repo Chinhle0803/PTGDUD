@@ -3,6 +3,7 @@ import './Admin.css'
 import { CiSearch } from "react-icons/ci";
 import { FaRegBell } from "react-icons/fa";
 import { IoTriangle } from "react-icons/io5";
+import DataTable from 'react-data-table-component';
 function Admin() {
     const [cards, setCards] = useState([]);
 
@@ -51,6 +52,54 @@ function Admin() {
     //         img: ' /Button 1530.png'
     //     },
     // ]
+    // tạo cột và hàng cho Datatable
+
+    const columns = [
+        {
+            name: '',
+            cell: () => <input type="checkbox" />,
+            width: '60px',
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+        {
+            name: 'Customer Name',
+            selector: row => row.name,
+            cell: row => (
+                <div className="flex items-center gap-3">
+                    <img src={row.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
+                    <span className="font-medium text-gray-800">{row.name}</span>
+                </div>
+            ),
+            sortable: true,
+        },
+        {
+            name: 'Company',
+            selector: row => row.company,
+            sortable: true,
+        },
+        {
+            name: 'Order Value',
+            selector: row => row.value,
+            sortable: true,
+        },
+        {
+            name: 'Order Date',
+            selector: row => row.date,
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            selector: row => row.status,
+            cell: row => (
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusStyles[row.status]}`}>
+                    {row.status}
+                </span>
+            ),
+            sortable: true,
+        },
+    ];
 
 
     useEffect(() => {
@@ -171,63 +220,16 @@ function Admin() {
                             <img src=" /Squares four 1.png" alt="" />
                             <h4 style={{ color: 'black', padding: "0px", margin: '0px' }}>Detailed report</h4>
                         </div>
-                        <div>
-                            <section>
-                                <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-xl font-bold text-gray-800">Detailed Report</h2>
-                                    <div className="flex gap-2">
-                                        <button className="border px-4 py-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">Import</button>
-                                        <button className="bg-black text-white px-4 py-1 rounded-md text-sm hover:bg-gray-800">Export</button>
-                                    </div>
-                                </div>
-
-                                <div className="overflow-x-auto shadow border border-gray-200 rounded-xl">
-                                    <table className="min-w-full text-sm text-gray-700">
-                                        <thead className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left">
-                                                    <input type="checkbox" className="mx-auto" />
-                                                </th>
-                                                <th className="px-6 py-3 text-left">Customer Name</th>
-                                                <th className="px-6 py-3 text-left">Company</th>
-                                                <th className="px-6 py-3 text-left">Order Value</th>
-                                                <th className="px-6 py-3 text-left">Order Date</th>
-                                                <th className="px-6 py-3 text-left">Status</th>
-                                                <th className="px-6 py-3"></th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody className="divide-y divide-gray-200 bg-white">
-                                            {data.map((row, index) => (
-                                                <tr key={index} className="hover:bg-gray-100">
-                                                    <td className="px-6 py-4 text-center">
-                                                        <input type="checkbox" />
-                                                    </td>
-
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <img src={row.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
-                                                            <span className="font-medium text-gray-800">{row.name}</span>
-                                                        </div>
-                                                    </td>
-
-                                                    <td className="px-6 py-4">{row.company}</td>
-                                                    <td className="px-6 py-4">{row.value}</td>
-                                                    <td className="px-6 py-4">{row.date}</td>
-
-                                                    <td className="px-6 py-4">
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusStyles[row.status]}`}>
-                                                            {row.status}
-                                                        </span>
-                                                    </td>
-
-                                                    <td className="px-6 py-4"></td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </section>
+                        <div className="p-4">
+                            <DataTable
+                                columns={columns}
+                                data={data}
+                                pagination
+                                highlightOnHover
+                                selectableRows= {false}
+                                responsive
+                                className="border border-gray-200 rounded-xl"
+                            />
                         </div>
                     </div>
                 </div>
