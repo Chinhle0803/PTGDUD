@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import { IoTriangle } from 'react-icons/io5';
 
 function Dashboard() {
-  const [cards, setCards] = useState([]);
+  
   const [data, setData] = useState([]);
+  const [cards, setCards] = useState([]);
+
+
 
   const columns = [
     {
@@ -16,6 +19,7 @@ function Dashboard() {
       button: true,
     },
     {
+
       name: 'Customer Name',
       selector: row => row.name,
       cell: row => (
@@ -25,6 +29,7 @@ function Dashboard() {
         </div>
       ),
       sortable: true,
+      
     },
     { name: 'Company', selector: row => row.company, sortable: true },
     { name: 'Order Value', selector: row => row.value, sortable: true },
