@@ -6,6 +6,7 @@ import { IoTriangle } from "react-icons/io5";
 import DataTable from 'react-data-table-component';
 function Admin() {
     const [cards, setCards] = useState([]);
+    const [data, setData] = useState([]);
 
     const ad_menu = [
         {
@@ -110,14 +111,21 @@ function Admin() {
     }, []);
     console.log(cards)
 
-    const data = [
-        { name: "Elizabeth Lee", company: "AvatarSystems", value: "$359", date: "10/07/2023", status: "New", avatar: "/Avatar (1).png" },
-        { name: "Carlos Garcia", company: "SmoozeShift", value: "$747", date: "24/07/2023", status: "New", avatar: "/Avatar (2).png" },
-        { name: "Elizabeth Bailey", company: "Prime Time Telecom", value: "$564", date: "08/08/2023", status: "In-progress", avatar: "/Avatar (3).png" },
-        { name: "Ryan Brown", company: "OmniTech Corporation", value: "$541", date: "31/08/2023", status: "In-progress", avatar: "/Avatar (4).png" },
-        { name: "Ryan Young", company: "DataStream Inc.", value: "$769", date: "01/05/2023", status: "Completed", avatar: "/Avatar (5).png" },
-        { name: "Hailey Adams", company: "FlowRush", value: "$922", date: "10/06/2023", status: "Completed", avatar: "/Avatar 313.png" },
-    ];
+    // const data = [
+    //     { name: "Elizabeth Lee", company: "AvatarSystems", value: "$359", date: "10/07/2023", status: "New", avatar: "/Avatar (1).png" },
+    //     { name: "Carlos Garcia", company: "SmoozeShift", value: "$747", date: "24/07/2023", status: "New", avatar: "/Avatar (2).png" },
+    //     { name: "Elizabeth Bailey", company: "Prime Time Telecom", value: "$564", date: "08/08/2023", status: "In-progress", avatar: "/Avatar (3).png" },
+    //     { name: "Ryan Brown", company: "OmniTech Corporation", value: "$541", date: "31/08/2023", status: "In-progress", avatar: "/Avatar (4).png" },
+    //     { name: "Ryan Young", company: "DataStream Inc.", value: "$769", date: "01/05/2023", status: "Completed", avatar: "/Avatar (5).png" },
+    //     { name: "Hailey Adams", company: "FlowRush", value: "$922", date: "10/06/2023", status: "Completed", avatar: "/Avatar 313.png" },
+    // ];
+    useEffect(()=> {
+        fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/data')
+        .then(res => res.json())
+        .then(data => setData(data))
+        .catch(err => console.error('Error fetching data:', err));
+    }, [])
+    console.log(data)
 
     const statusStyles = {
         "New": "bg-green-100 text-green-700",
