@@ -12,7 +12,6 @@ import './App.css'
 function App() {
   return (
     <div>
-      <h1 className="text-4xl text-red-500 font-bold">Hello Tailwind!</h1>
       <Routes>
         <Route path="/*" element={<Admin />}>
           <Route index element={<Dashboard />} />
