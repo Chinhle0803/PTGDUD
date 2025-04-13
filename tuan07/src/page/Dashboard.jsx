@@ -16,7 +16,7 @@ function Dashboard() {
     avatar: '/default-avatar.png', // Avatar mặc định
   });
   const [isLoading, setIsLoading] = useState(true); // State cho loading
-  const [showNotification, setShowNotification] = useState(false); // State cho thông báo
+  const [notification, setNotification] = useState({ show: false, message: '', type: 'success' }); // State cho thông báo
 
   const columns = [
     {
@@ -51,6 +51,23 @@ function Dashboard() {
       ),
       sortable: true,
     },
+    {
+      name: 'Actions',
+      cell: row => (
+        <button
+          onClick={() => {
+            setNewUser(row); // Điền dữ liệu người dùng vào modal
+            setIsModalOpen(true);
+          }}
+          className="text-blue-600 hover:underline"
+        >
+          Edit
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
   ];
 
   const statusStyles = {
@@ -72,6 +89,10 @@ function Dashboard() {
         setData(tableData);
       } catch (err) {
         console.error('Error fetching data:', err);
+        setNotification({ show: true, message: 'Failed to fetch data!', type: 'error' });
+        setTimeout(() => {
+          setNotification({ show: false, message: '', type: 'success' });
+        }, 3000);
       } finally {
         setIsLoading(false);
       }
@@ -85,20 +106,28 @@ function Dashboard() {
     setNewUser(prev => ({ ...prev, [name]: value }));
   };
 
-  // Xử lý gửi form
+  // Xử lý gửi form (POST hoặc PUT)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/data', {
-        method: 'POST',
+      const url = newUser.id
+        ? `https://67c81c2e0acf98d07084e2ae.mockapi.io/data/${newUser.id}`
+        : 'https://67c81c2e0acf98d07084e2ae.mockapi.io/data';
+      const method = newUser.id ? 'PUT' : 'POST';
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newUser),
       });
-      const addedUser = await response.json();
-      setData(prev => [...prev, addedUser]); // Cập nhật bảng
-      setIsModalOpen(false); // Đóng modal
+      const updatedUser = await response.json();
+      setData(prev =>
+        newUser.id
+          ? prev.map(item => (item.id === newUser.id ? updatedUser : item))
+          : [...prev, updatedUser]
+      );
+      setIsModalOpen(false);
       setNewUser({
         name: '',
         company: '',
@@ -106,14 +135,21 @@ function Dashboard() {
         date: '',
         status: 'New',
         avatar: '/default-avatar.png',
-      }); // Reset form
-      setShowNotification(true); // Hiển thị thông báo
-      // Ẩn thông báo sau 3 giây
+      });
+      setNotification({
+        show: true,
+        message: newUser.id ? 'User updated successfully!' : 'User added successfully!',
+        type: 'success',
+      });
       setTimeout(() => {
-        setShowNotification(false);
+        setNotification({ show: false, message: '', type: 'success' });
       }, 3000);
     } catch (err) {
-      console.error('Error adding user:', err);
+      console.error('Error saving user:', err);
+      setNotification({ show: true, message: 'Failed to save user!', type: 'error' });
+      setTimeout(() => {
+        setNotification({ show: false, message: '', type: 'success' });
+      }, 3000);
     }
   };
 
@@ -163,7 +199,17 @@ function Dashboard() {
         {/* Nút Add User */}
         <div className="my-4">
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setNewUser({
+                name: '',
+                company: '',
+                value: '',
+                date: '',
+                status: 'New',
+                avatar: '/default-avatar.png',
+              }); // Reset form khi thêm mới
+              setIsModalOpen(true);
+            }}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
             Add User
@@ -188,7 +234,9 @@ function Dashboard() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-xl font-semibold mb-4">Add New User</h3>
+            <h3 className="text-xl font-semibold mb-4">
+              {newUser.id ? 'Edit User' : 'Add New User'}
+            </h3>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Name</label>
@@ -259,7 +307,7 @@ function Dashboard() {
                   type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
-                  Add User
+                  {newUser.id ? 'Update User' : 'Add User'}
                 </button>
               </div>
             </form>
@@ -268,9 +316,13 @@ function Dashboard() {
       )}
 
       {/* Thông báo */}
-      {showNotification && (
-        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg animate-fade-in-out">
-          User added successfully!
+      {notification.show && (
+        <div
+          className={`fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg animate-fade-in-out flex items-center gap-2 ${
+            notification.type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+          }`}
+        >
+          {notification.message}
         </div>
       )}
     </div>
