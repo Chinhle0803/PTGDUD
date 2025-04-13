@@ -1,13 +1,22 @@
 import DataTable from 'react-data-table-component';
 import { useEffect, useState } from 'react';
 import { IoTriangle } from 'react-icons/io5';
+import './Dashboard.css'; // Giữ file CSS hiện tại
 
 function Dashboard() {
-  
   const [data, setData] = useState([]);
   const [cards, setCards] = useState([]);
-
-
+  const [isModalOpen, setIsModalOpen] = useState(false); // State cho modal
+  const [newUser, setNewUser] = useState({
+    name: '',
+    company: '',
+    value: '',
+    date: '',
+    status: 'New',
+    avatar: '/default-avatar.png', // Avatar mặc định
+  });
+  const [isLoading, setIsLoading] = useState(true); // State cho loading
+  const [showNotification, setShowNotification] = useState(false); // State cho thông báo
 
   const columns = [
     {
@@ -19,7 +28,6 @@ function Dashboard() {
       button: true,
     },
     {
-
       name: 'Customer Name',
       selector: row => row.name,
       cell: row => (
@@ -29,7 +37,6 @@ function Dashboard() {
         </div>
       ),
       sortable: true,
-      
     },
     { name: 'Company', selector: row => row.company, sortable: true },
     { name: 'Order Value', selector: row => row.value, sortable: true },
@@ -53,50 +60,92 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/card')
-      .then(res => res.json())
-      .then(data => {
-        console.log('Cards:', data);
-        setCards(data);
-      })
-      .catch(err => console.error('Error fetching cards:', err));
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const cardRes = await fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/card');
+        const cardData = await cardRes.json();
+        setCards(cardData);
 
-    fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/data')
-      .then(res => res.json())
-      .then(data => {
-        console.log('Data:', data);
-        setData(data);
-      })
-      .catch(err => console.error('Error fetching data:', err));
+        const dataRes = await fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/data');
+        const tableData = await dataRes.json();
+        setData(tableData);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
+  // Xử lý thay đổi input trong modal
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Xử lý gửi form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('https://67c81c2e0acf98d07084e2ae.mockapi.io/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+      const addedUser = await response.json();
+      setData(prev => [...prev, addedUser]); // Cập nhật bảng
+      setIsModalOpen(false); // Đóng modal
+      setNewUser({
+        name: '',
+        company: '',
+        value: '',
+        date: '',
+        status: 'New',
+        avatar: '/default-avatar.png',
+      }); // Reset form
+      setShowNotification(true); // Hiển thị thông báo
+      // Ẩn thông báo sau 3 giây
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 3000);
+    } catch (err) {
+      console.error('Error adding user:', err);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="text-center text-gray-600">Loading...</div>;
+  }
+
   return (
-    <div className="content">
-      <div style={{ display: 'flex' }}>
+    <div className="dashboard-content">
+      {/* Tiêu đề Overview */}
+      <div className="flex items-center gap-2">
         <img src="/Squares four 1.png" alt="overview" />
-        <h4 style={{ color: 'black', padding: 0, margin: 0 }}>Overview</h4>
+        <h4 className="text-black m-0 p-0">Overview</h4>
       </div>
 
-      <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-around' }}>
+      {/* Danh sách card */}
+      <ul className="flex justify-around list-none mt-4">
         {cards.map((card, i) => (
           <li
             key={i}
-            style={{
-              backgroundColor: i === 0 ? 'rgb(235, 197, 218)' : 'rgb(198, 234, 250)',
-              width: '300px',
-              height: '150px',
-              borderRadius: '10px',
-            }}
+            className={`card-item ${i === 0 ? 'bg-pink-100' : 'bg-blue-100'}`}
           >
-            <div style={{ margin: 'auto 10px' }}>
+            <div className="mx-2 my-auto">
               <h4>{card.title}</h4>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div className="flex justify-between">
                 <h3>${card.cost}</h3>
-                <img src={card.img} alt={card.title} style={{ marginRight: '10px' }} />
+                <img src={card.img} alt={card.title} className="mr-2" />
               </div>
               <div>
-                <h5 style={{ color: card.change >= 0 ? 'green' : 'blue', display: 'inline' }}>
-                  <IoTriangle /> {card.change} <label style={{ color: 'black' }}> period of change</label>
+                <h5 className={`inline ${card.change >= 0 ? 'text-green-600' : 'text-blue-600'}`}>
+                  <IoTriangle className="inline" /> {card.change}
+                  <span className="text-black"> period of change</span>
                 </h5>
               </div>
             </div>
@@ -104,11 +153,24 @@ function Dashboard() {
         ))}
       </ul>
 
-      <div>
-        <div style={{ display: 'flex', marginTop: '20px' }}>
+      {/* Tiêu đề Detailed Report */}
+      <div className="mt-6">
+        <div className="flex items-center gap-2">
           <img src="/Squares four 1.png" alt="report" />
-          <h4 style={{ color: 'black', padding: 0, margin: 0 }}>Detailed report</h4>
+          <h4 className="text-black m-0 p-0">Detailed report</h4>
         </div>
+
+        {/* Nút Add User */}
+        <div className="my-4">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Add User
+          </button>
+        </div>
+
+        {/* Bảng dữ liệu */}
         <div className="p-4">
           <DataTable
             columns={columns}
@@ -121,6 +183,96 @@ function Dashboard() {
           />
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-4">Add New User</h3>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={newUser.name}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Company</label>
+                <input
+                  type="text"
+                  name="company"
+                  value={newUser.company}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Order Value</label>
+                <input
+                  type="number"
+                  name="value"
+                  value={newUser.value}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Order Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={newUser.date}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <select
+                  name="status"
+                  value={newUser.status}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  <option value="New">New</option>
+                  <option value="In-progress">In-progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Add User
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Thông báo */}
+      {showNotification && (
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg animate-fade-in-out">
+          User added successfully!
+        </div>
+      )}
     </div>
   );
 }

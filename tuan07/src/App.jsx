@@ -7,10 +7,12 @@ import Team from './page/Team';
 import Analatic from './page/Analytic';
 import Messages from './page/Messages';
 import Integreations from './page/Integartions';
+import './App.css'
 
 function App() {
   return (
     <div>
+      <h1 className="text-4xl text-red-500 font-bold">Hello Tailwind!</h1>
       <Routes>
         <Route path="/*" element={<Admin />}>
           <Route index element={<Dashboard />} />

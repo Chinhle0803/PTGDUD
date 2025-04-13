@@ -22,7 +22,7 @@ function Admin() {
           <div className="hd-menu-input">
             <input
               type="text"
-              style={{ width: '350px', borderRadius: '30px', color: 'black', textAlign: 'center' }}
+              style={{ width: '350px', height: "40px", borderRadius: '30px', color: 'black', textAlign: 'center' }}
               placeholder="Search..."
             />
             <button style={{ background: 'none', border: 'none' }}>
